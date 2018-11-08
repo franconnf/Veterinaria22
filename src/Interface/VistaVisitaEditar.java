@@ -29,6 +29,7 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
     VisitaDeAtencion visita;
     ArrayList<ComboBoxMascotaItems> listOfMascotas = new ArrayList<>();
     ArrayList<ComboBoxTratamientoItems> listOfTratamientos = new ArrayList<>();
+    VistaVisitaMain mainFrame;
 
     public VistaVisitaEditar(VisitaDeAtencion visita) {
 
@@ -79,6 +80,11 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         });
 
         jButton2.setText("Cancelar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -189,8 +195,13 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         visitaData.editarVisita(visitaEditar);
 
         JOptionPane.showMessageDialog(null, "Visita editada");
+        mainFrame.getjButton1().doClick();
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -270,5 +281,9 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
             jComboBoxTratamiento.addItem(item);
         }
 
+    }
+
+    public void setMainFrame(VistaVisitaMain frame) {
+        mainFrame = frame;
     }
 }

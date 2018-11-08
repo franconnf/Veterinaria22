@@ -238,8 +238,9 @@ public class VistaVisitaMain extends javax.swing.JPanel {
                 visita.setIdMascota(rs.getInt("id_masc1"));
                 visita.setFecha(rs.getDate("fecha"));
                 visita.setPrecio(rs.getDouble("precio"));
-                
+
                 VistaVisitaEditar vistaEditar = new VistaVisitaEditar(visita);
+                vistaEditar.setMainFrame(this);
                 vistaEditar.setVisible(true);
             } catch (Exception ex) {
                 int stackNumber = 0;
