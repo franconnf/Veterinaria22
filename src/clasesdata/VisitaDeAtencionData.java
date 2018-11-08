@@ -114,4 +114,22 @@ public class VisitaDeAtencionData {
         }
 
     }
+
+    public void editarVisita(VisitaDeAtencion visita) {
+        try {
+            String sql = "UPDATE visita SET id_masc1 = ?, id_Tratamiento1 = ?, fecha = ?, precio = ? where id_Visita = ?;";
+            PreparedStatement stm = Conexion.getConexion().prepareStatement(sql);
+            stm.setInt(1, visita.getIdMascota());
+            stm.setInt(2, visita.getIdTratamiento());
+            stm.setDate(3, new java.sql.Date(visita.getFecha().getTime()));
+            stm.setDouble(4, visita.getPrecio());
+            stm.setInt(5, visita.getIdVisita());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println("Error al modificar visita");
+            System.out.println(ex);
+        } finally {
+            Conexion.close();
+        }
+    }
 }

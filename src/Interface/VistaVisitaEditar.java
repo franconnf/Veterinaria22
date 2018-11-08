@@ -8,13 +8,16 @@ package Interface;
 import Interface.ComboBoxItems.ComboBoxMascotaItems;
 import Interface.ComboBoxItems.ComboBoxTratamientoItems;
 import clasesdata.Conexion;
+import clasesdata.VisitaDeAtencionData;
 import clasesprincipales.VisitaDeAtencion;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.stream.Collectors;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 
 /**
@@ -33,8 +36,9 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         initComponents();
         loadComboBoxes();
         setLocationRelativeTo(null);
-
-        jFormattedTextField1.setText(String.valueOf(visita.getPrecio()));
+        jComboBoxMascota.getModel().setSelectedItem(listOfMascotas.stream().filter(m -> m.getId() == visita.getIdMascota()).collect(Collectors.toList()).get(0));
+        jComboBoxTratamiento.getModel().setSelectedItem(listOfTratamientos.stream().filter(m -> m.getId() == visita.getIdTratamiento()).collect(Collectors.toList()).get(0));
+        jFormattedTextField1.setValue(visita.getPrecio());
         jSpinner1.setValue(visita.getFecha());
         Calendar date = Calendar.getInstance();
         date.setTime((Date) jSpinner1.getValue());
@@ -64,7 +68,7 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         jComboBoxTratamiento = new javax.swing.JComboBox<>();
         jFormattedTextField1 = new javax.swing.JFormattedTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Editar Visita");
 
         jButton1.setText("Aceptar");
@@ -120,7 +124,7 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         jLabel3.setText("Fecha:");
 
         jFormattedTextField1.setColumns(10);
-        jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#+0.0"))));
+        jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.0"))));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -170,7 +174,22 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        VisitaDeAtencion visitaEditar = new VisitaDeAtencion();
+        VisitaDeAtencionData visitaData = new VisitaDeAtencionData();
 
+        ComboBoxMascotaItems mascota = (ComboBoxMascotaItems) jComboBoxMascota.getSelectedItem();
+        ComboBoxTratamientoItems trat = (ComboBoxTratamientoItems) jComboBoxTratamiento.getSelectedItem();
+
+        visitaEditar.setIdVisita(visita.getIdVisita());
+        visitaEditar.setIdMascota(mascota.getId());
+        visitaEditar.setIdTratamiento(trat.getId());
+        visitaEditar.setFecha((Date) jSpinner1.getValue());
+        visitaEditar.setPrecio(Double.valueOf(jFormattedTextField1.getText().replace(',', '.')));
+
+        visitaData.editarVisita(visitaEditar);
+
+        JOptionPane.showMessageDialog(null, "Visita editada");
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -206,8 +225,8 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBoxMascota;
-    private javax.swing.JComboBox<String> jComboBoxTratamiento;
+    private javax.swing.JComboBox<ComboBoxMascotaItems> jComboBoxMascota;
+    private javax.swing.JComboBox<ComboBoxTratamientoItems> jComboBoxTratamiento;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -244,11 +263,11 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         }
 
         for (ComboBoxMascotaItems item : listOfMascotas) {
-            jComboBoxMascota.addItem(item.toString());
+            jComboBoxMascota.addItem(item);
         }
 
         for (ComboBoxTratamientoItems item : listOfTratamientos) {
-            jComboBoxTratamiento.addItem(item.toString());
+            jComboBoxTratamiento.addItem(item);
         }
 
     }

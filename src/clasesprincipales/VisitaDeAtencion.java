@@ -66,7 +66,7 @@ public class VisitaDeAtencion {
     }
 
     public void setPrecio(double precio) {
-        this.precio = precio;
+        this.precio = Math.abs(precio);
     }
 
 }
