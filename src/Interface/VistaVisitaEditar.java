@@ -8,7 +8,11 @@ package Interface;
 import Interface.ComboBoxItems.ComboBoxMascotaItems;
 import Interface.ComboBoxItems.ComboBoxTratamientoItems;
 import clasesdata.Conexion;
+import clasesdata.MascotaData;
+import clasesdata.TratamientoData;
 import clasesdata.VisitaDeAtencionData;
+import clasesprincipales.Mascota;
+import clasesprincipales.Tratamiento;
 import clasesprincipales.VisitaDeAtencion;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,8 +41,8 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         initComponents();
         loadComboBoxes();
         setLocationRelativeTo(null);
-        jComboBoxMascota.getModel().setSelectedItem(listOfMascotas.stream().filter(m -> m.getId() == visita.getIdMascota()).collect(Collectors.toList()).get(0));
-        jComboBoxTratamiento.getModel().setSelectedItem(listOfTratamientos.stream().filter(m -> m.getId() == visita.getIdTratamiento()).collect(Collectors.toList()).get(0));
+        jComboBoxMascota.getModel().setSelectedItem(listOfMascotas.stream().filter(m -> m.getId() == visita.getMascota().getId()).collect(Collectors.toList()).get(0));
+        jComboBoxTratamiento.getModel().setSelectedItem(listOfTratamientos.stream().filter(m -> m.getId() == visita.getTratamiento().getIdTratamiento()).collect(Collectors.toList()).get(0));
         jFormattedTextField1.setValue(visita.getPrecio());
         jSpinner1.setValue(visita.getFecha());
         Calendar date = Calendar.getInstance();
@@ -57,7 +61,7 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        jButtonAceptar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -72,10 +76,10 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Editar Visita");
 
-        jButton1.setText("Aceptar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonAceptar.setText("Aceptar");
+        jButtonAceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonAceptarActionPerformed(evt);
             }
         });
 
@@ -92,7 +96,7 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(226, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(jButtonAceptar)
                 .addGap(18, 18, 18)
                 .addComponent(jButton2)
                 .addContainerGap())
@@ -103,7 +107,7 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(jButtonAceptar))
                 .addGap(6, 6, 6))
         );
 
@@ -179,25 +183,28 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        VisitaDeAtencion visitaEditar = new VisitaDeAtencion();
-        VisitaDeAtencionData visitaData = new VisitaDeAtencionData();
+    private void jButtonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAceptarActionPerformed
+        VisitaDeAtencion visita = new VisitaDeAtencion();
+        VisitaDeAtencionData visitaData = new VisitaDeAtencionData();      
+        MascotaData mascotaData = new MascotaData();
+        TratamientoData tratamientoData = new TratamientoData();
+        
 
-        ComboBoxMascotaItems mascota = (ComboBoxMascotaItems) jComboBoxMascota.getSelectedItem();
-        ComboBoxTratamientoItems trat = (ComboBoxTratamientoItems) jComboBoxTratamiento.getSelectedItem();
+        ComboBoxMascotaItems selectedMascotaId = (ComboBoxMascotaItems) jComboBoxMascota.getSelectedItem();
+        ComboBoxTratamientoItems selectedTratamientoId = (ComboBoxTratamientoItems) jComboBoxTratamiento.getSelectedItem();
 
-        visitaEditar.setIdVisita(visita.getIdVisita());
-        visitaEditar.setIdMascota(mascota.getId());
-        visitaEditar.setIdTratamiento(trat.getId());
-        visitaEditar.setFecha((Date) jSpinner1.getValue());
-        visitaEditar.setPrecio(Double.valueOf(jFormattedTextField1.getText().replace(',', '.')));
+        visita.setIdVisita(visita.getIdVisita());
+        visita.setMascota(mascotaData.buscarMascota(selectedMascotaId.getId()));
+        visita.setTratamiento(tratamientoData.buscar(selectedTratamientoId.getId()));
+        visita.setFecha((Date) jSpinner1.getValue());
+        visita.setPrecio(Double.valueOf(jFormattedTextField1.getText().replace(',', '.')));
 
-        visitaData.editarVisita(visitaEditar);
+        visitaData.editarVisita(visita);
 
         JOptionPane.showMessageDialog(null, "Visita editada");
         mainFrame.getjButton1().doClick();
         dispose();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonAceptarActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         dispose();
@@ -234,8 +241,8 @@ public class VistaVisitaEditar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonAceptar;
     private javax.swing.JComboBox<ComboBoxMascotaItems> jComboBoxMascota;
     private javax.swing.JComboBox<ComboBoxTratamientoItems> jComboBoxTratamiento;
     private javax.swing.JFormattedTextField jFormattedTextField1;

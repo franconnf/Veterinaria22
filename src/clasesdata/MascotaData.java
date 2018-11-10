@@ -5,12 +5,11 @@
  */
 package clasesdata;
 
+import clasesprincipales.Cliente;
 import clasesprincipales.Mascota;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -34,7 +33,7 @@ public class MascotaData {
                 stm.setDate(6, new java.sql.Date(mascota.getFechaNacimiento().getTime()));
                 stm.setDouble(7, mascota.getPesoPromedio());
                 stm.setDouble(8, mascota.getPesoActual());
-                stm.setString(9, mascota.getDni_dueno());
+                stm.setString(9, mascota.getDuenio().getDni());
 
                 if (stm.executeUpdate() == 0) {
                     System.out.println("Error al insertar mascota: " + mascota.getAlias());
@@ -48,11 +47,7 @@ public class MascotaData {
         }
         
         finally{
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(MascotaData.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Conexion.close();
         }
     }
     
@@ -60,6 +55,7 @@ public class MascotaData {
         Connection con = Conexion.getConexion();
         List<Mascota> mascotas = new ArrayList<>();
         String sql = "SELECT * FROM mascota";
+        ClienteData clienteData = new ClienteData();
         
         try {
             PreparedStatement stm = con.prepareStatement(sql);
@@ -67,7 +63,7 @@ public class MascotaData {
             
             while (rs.next()) {                
                 Mascota mascota = new Mascota();
-                
+                Cliente cliente = clienteData.buscarCliente(rs.getString("dniCliente1"));
                 mascota.setId(rs.getInt("id_masc"));
                 mascota.setAlias(rs.getString("alias"));
                 mascota.setSexo(rs.getString("sexo"));
@@ -77,24 +73,20 @@ public class MascotaData {
                 mascota.setFechaNacimiento(new java.util.Date(rs.getDate("fecha_nac_aprox").getTime()));
                 mascota.setPesoPromedio(rs.getDouble("peso_prom"));
                 mascota.setPesoActual(rs.getDouble("peso_actual"));
-                mascota.setDni_dueno(rs.getString("dniCliente1"));
+                mascota.setDuenio(cliente);
                 
                 mascotas.add(mascota);
             }
             
             return mascotas;
         } catch (SQLException e) {
-            
+            return null;
         }
         
         finally{
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(MascotaData.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Conexion.close();
         }
-        return null;
+        
         
     }
     
@@ -102,6 +94,7 @@ public class MascotaData {
         Connection con = Conexion.getConexion();
         String sql = "select * from mascota where id_masc = ?";
         Mascota mascota = new Mascota();
+        ClienteData clienteData = new ClienteData();
         
         try {
             PreparedStatement stm = con.prepareStatement(sql);
@@ -109,6 +102,7 @@ public class MascotaData {
             ResultSet rs = stm.executeQuery();
             
             if(rs.isBeforeFirst()){
+                Cliente cliente = clienteData.buscarCliente(rs.getString("dniCliente1"));
                 rs.next();
                 mascota.setId(rs.getInt("id_masc"));
                 mascota.setAlias(rs.getString("alias"));
@@ -119,9 +113,13 @@ public class MascotaData {
                 mascota.setFechaNacimiento(new java.util.Date(rs.getDate("fecha_nac_aprox").getTime()));
                 mascota.setPesoPromedio(rs.getDouble("peso_prom"));
                 mascota.setPesoActual(rs.getDouble("peso_actual"));
-                mascota.setDni_dueno(rs.getString("dniCliente1"));
+                mascota.setDuenio(cliente);
+                
+                return mascota;
+                
             }else{
                 System.out.print("Nothing found");
+                return null;
             }           
             
         } catch (SQLException ex) {
@@ -129,8 +127,10 @@ public class MascotaData {
             return null;
             
         }
+        finally{
+            Conexion.close();
+        }
         
-        return mascota;
     }
 
 }

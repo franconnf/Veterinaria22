@@ -8,6 +8,8 @@ package Interface;
 import Interface.ComboBoxItems.ComboBoxMascotaItems;
 import Interface.ComboBoxItems.ComboBoxTratamientoItems;
 import clasesdata.Conexion;
+import clasesdata.MascotaData;
+import clasesdata.TratamientoData;
 import clasesdata.VisitaDeAtencionData;
 import clasesprincipales.VisitaDeAtencion;
 import java.awt.Container;
@@ -115,21 +117,25 @@ public class VistaVisitaAgregar extends javax.swing.JPanel {
 
     private void jButtonAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAgregarActionPerformed
 
-        int idMascota = listOfMascotas.stream().filter((ComboBoxMascotaItems mascota) -> {
+        int selectedMascotaId = listOfMascotas.stream().filter((ComboBoxMascotaItems mascota) -> {
             return mascota.toString().equals(jComboBoxMascota.getSelectedItem());
         }).mapToInt(item -> item.getId()).sum();
 
-        int idTratamiento = listOfTratamientos.stream().filter((trat) -> {
+        int selectedTratamientoId = listOfTratamientos.stream().filter((trat) -> {
             return trat.toString().equals(jComboBoxTratamiento.getSelectedItem());
         }).mapToInt(item -> item.getId()).sum();
-
-        double precio = listOfTratamientos.stream().filter((trat) -> {
-            return trat.toString().equals(jComboBoxTratamiento.getSelectedItem());
-        }).mapToDouble(item -> item.getPrecio()).sum();
+               
+        MascotaData mascotaData = new MascotaData();
+        TratamientoData tratamientoData = new TratamientoData();
 
         Date fecha = new Date();
-
-        VisitaDeAtencion visita = new VisitaDeAtencion(idMascota, idTratamiento, fecha, precio);
+                
+        VisitaDeAtencion visita = new VisitaDeAtencion();
+        
+        visita.setMascota(mascotaData.buscarMascota(selectedMascotaId));
+        visita.setTratamiento(tratamientoData.buscar(selectedTratamientoId));
+        visita.setFecha(fecha);
+        visita.setPrecio(tratamientoData.buscar(selectedTratamientoId).getPrecio());
 
         VisitaDeAtencionData visitaData = new VisitaDeAtencionData();
         visitaData.agregarVisita(visita);

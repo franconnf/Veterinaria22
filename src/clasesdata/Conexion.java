@@ -21,7 +21,7 @@ public class Conexion {
     private static Connection conexion;
 
     private Conexion() {
-        url = "jdbc:mysql://localhost:3306/veterinariasl?useTimezone=false&serverTimezone=UTC";
+        url = "jdbc:mysql://localhost:3306/veterinaria22?useTimezone=false&serverTimezone=UTC";
         user = "root";
         pass = "";
 
