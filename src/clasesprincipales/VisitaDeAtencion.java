@@ -14,21 +14,14 @@ import java.util.Date;
 public class VisitaDeAtencion {
 
     private int idVisita;
-    private int idMascota;
-    private int idTratamiento;
+    private Mascota mascota;
+    private Tratamiento tratamiento;
     private Date fecha;
     private double precio;
 
     public VisitaDeAtencion() {
     }
-
-    public VisitaDeAtencion(int idMascota, int idTratamiento, Date fecha, double precio) {
-        this.idMascota = idMascota;
-        this.idTratamiento = idTratamiento;
-        this.fecha = fecha;
-        this.precio = precio;
-    }
-
+   
     public int getIdVisita() {
         return idVisita;
     }
@@ -37,22 +30,23 @@ public class VisitaDeAtencion {
         this.idVisita = idVisita;
     }
 
-    public int getIdMascota() {
-        return idMascota;
+    public Mascota getMascota() {
+        return mascota;
     }
 
-    public void setIdMascota(int idMascota) {
-        this.idMascota = idMascota;
+    public void setMascota(Mascota mascota) {
+        this.mascota = mascota;
     }
 
-    public int getIdTratamiento() {
-        return idTratamiento;
+    public Tratamiento getTratamiento() {
+        return tratamiento;
     }
 
-    public void setIdTratamiento(int idTratamiento) {
-        this.idTratamiento = idTratamiento;
+    public void setTratamiento(Tratamiento tratamiento) {
+        this.tratamiento = tratamiento;
     }
-
+    
+    
     public Date getFecha() {
         return fecha;
     }

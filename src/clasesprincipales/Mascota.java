@@ -22,9 +22,9 @@ public class Mascota {
     private Date fechaNacimiento;
     private double pesoPromedio;
     private double pesoActual;
-    private String dni_dueno;
+    private Cliente duenio;
 
-    public Mascota(String alias, String sexo, String especie, String raza, String colorDePelo, Date fechaNacimiento, double pesoPromedio, double pesoActual, String dni_dueno) {
+    public Mascota(String alias, String sexo, String especie, String raza, String colorDePelo, Date fechaNacimiento, double pesoPromedio, double pesoActual, Cliente duenio) {
         this.alias = alias;
         this.sexo = sexo;
         this.especie = especie;
@@ -33,7 +33,7 @@ public class Mascota {
         this.fechaNacimiento = fechaNacimiento;
         this.pesoPromedio = pesoPromedio;
         this.pesoActual = pesoActual;
-        this.dni_dueno = dni_dueno;
+        this.duenio = duenio;
     }
 
     public Mascota() {
@@ -165,19 +165,18 @@ public class Mascota {
         this.pesoActual = pesoActual;
     }
 
-    /**
-     * @return the dni_dueno
-     */
-    public String getDni_dueno() {
-        return dni_dueno;
+    public Cliente getDuenio() {
+        return duenio;
+    }
+
+    public void setDuenio(Cliente duenio) {
+        this.duenio = duenio;
     }
 
     /**
-     * @param dni_dueno the dni_dueno to set
+     * @return the dni_dueno
      */
-    public void setDni_dueno(String dni_dueno) {
-        this.dni_dueno = dni_dueno;
-    }
+    
     
     
 }

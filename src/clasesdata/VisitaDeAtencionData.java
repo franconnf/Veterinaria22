@@ -6,7 +6,6 @@
 package clasesdata;
 
 import clasesprincipales.VisitaDeAtencion;
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,19 +23,20 @@ public class VisitaDeAtencionData {
     }
 
     public ArrayList<VisitaDeAtencion> listarVisitas() {
-        Connection con = Conexion.getConexion();
         String sql = "select * from visita";
         ArrayList<VisitaDeAtencion> listaDeVisitas = new ArrayList<>();
+        MascotaData mascotaData = new MascotaData();
+        TratamientoData tratamientoData = new TratamientoData();
 
         try {
-            PreparedStatement stm = con.prepareStatement(sql);
+            PreparedStatement stm = Conexion.getConexion().prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
 
             while (rs.next()) {
                 VisitaDeAtencion visita = new VisitaDeAtencion();
                 visita.setIdVisita(rs.getInt(1));
-                visita.setIdMascota(rs.getInt(2));
-                visita.setIdTratamiento(rs.getInt(3));
+                visita.setMascota(mascotaData.buscarMascota(rs.getInt(2)));
+                visita.setTratamiento(tratamientoData.buscar(rs.getInt(3)));
                 visita.setFecha(rs.getDate(4));
                 visita.setPrecio(rs.getDouble(5));
 
@@ -50,22 +50,48 @@ public class VisitaDeAtencionData {
             System.out.println(ex);
             return null;
         } finally {
-            try {
-                con.close();
-            } catch (SQLException ex) {
-                System.out.println("Error al cerrar la conexion");
-                System.out.println(ex);
-            }
+            Conexion.close();
         }
+    }
+    
+    public VisitaDeAtencion buscarVisita(int id){
+        String sql = "select * from visita where id_Visita = ?;";
+        VisitaDeAtencion visita = new VisitaDeAtencion();
+        MascotaData mascotaData = new MascotaData();
+        TratamientoData tratamientoData = new TratamientoData();
+        try (PreparedStatement ps = Conexion.getConexion().prepareStatement(sql)) {
+                ps.setInt(1, id);
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                visita.setIdVisita(rs.getInt("id_visita"));
+                visita.setMascota(mascotaData.buscarMascota(rs.getInt(2)));
+                visita.setTratamiento(tratamientoData.buscar(rs.getInt(3)));
+                visita.setFecha(rs.getDate("fecha"));
+                visita.setPrecio(rs.getDouble("precio"));
+                return visita;
+                
+            } catch (Exception ex) {
+                int stackNumber = 0;
+                for (int i = 0; i < ex.getStackTrace().length; i++) {
+                    if ("<init>".equals(ex.getStackTrace()[i].getMethodName())) {
+                        stackNumber = i - 1;
+                    }
+                }
+                System.out.println("*******************************************************");
+                System.out.println("");
+                System.out.println(ex);
+                System.out.println("Error en: " + ex.getStackTrace()[stackNumber].getClassName() + " ---> " + ex.getStackTrace()[stackNumber].getMethodName() + " || Line: " + ex.getStackTrace()[stackNumber].getLineNumber());
+                System.out.println("*******************************************************");
+                return null;
+            }
     }
 
     public void agregarVisita(VisitaDeAtencion visita) {
-        try {
-            Connection con = Conexion.getConexion();
+        try {           
             String sql = "insert into visita (id_tratamiento1, id_masc1, fecha, precio) values (?,?,?,?);";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setInt(1, visita.getIdTratamiento());
-            ps.setInt(2, visita.getIdMascota());
+            PreparedStatement ps = Conexion.getConexion().prepareStatement(sql);
+            ps.setInt(1, visita.getTratamiento().getIdTratamiento());
+            ps.setInt(2, visita.getMascota().getId());
             ps.setDate(3, new Date(visita.getFecha().getTime()));
             ps.setDouble(4, visita.getPrecio());
 
@@ -119,8 +145,8 @@ public class VisitaDeAtencionData {
         try {
             String sql = "UPDATE visita SET id_masc1 = ?, id_Tratamiento1 = ?, fecha = ?, precio = ? where id_Visita = ?;";
             PreparedStatement stm = Conexion.getConexion().prepareStatement(sql);
-            stm.setInt(1, visita.getIdMascota());
-            stm.setInt(2, visita.getIdTratamiento());
+            stm.setInt(1, visita.getMascota().getId());
+            stm.setInt(2, visita.getTratamiento().getIdTratamiento());
             stm.setDate(3, new java.sql.Date(visita.getFecha().getTime()));
             stm.setDouble(4, visita.getPrecio());
             stm.setInt(5, visita.getIdVisita());
